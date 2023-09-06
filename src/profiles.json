@@ -1,0 +1,11 @@
+{
+  "258": {
+    "name": "integer"
+  },
+  "256": {
+    "name": "mixed case ascii string"
+  },
+  "1024": {
+    "name": "empty"
+  }
+}
