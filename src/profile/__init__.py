@@ -7,12 +7,6 @@ if TYPE_CHECKING:
     from src import EnhancedLine
 
 
-def profile_decorator(func):
-    def wrapper(*args, **kwargs):
-        return func(*args, **kwargs)
-    return wrapper
-
-
 class ColumnProfiler:
     def __init__(self, lines: list['EnhancedLine']):
         self.__lines = lines

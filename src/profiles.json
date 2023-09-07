@@ -1,14 +1,23 @@
 {
-  "258": {
-    "name": "integer"
-  },
   "256": {
-    "name": "mixed case ascii string"
+    "name": "ascii string"
   },
-  "1024": {
-    "name": "empty"
+  "272": {
+    "name": "upper case ascii string"
+  },
+  "292": {
+    "name": "upper case ascii string"
   },
   "384": {
     "name": "title"
+  },
+  "388": {
+    "name": "title"
+  },
+  "4354": {
+    "name": "integer"
+  },
+  "7424": {
+    "name": "empty"
   }
 }
