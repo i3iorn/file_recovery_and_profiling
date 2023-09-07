@@ -1,4 +1,6 @@
 import re
+import string
+from datetime import datetime
 
 from src.profile import profile_decorator
 
@@ -27,7 +29,20 @@ class Profiler:
         'ipv4': {'type': 'rare'},
         'ipv6': {'type': 'rare'},
         'blank': {'type': 'general', 'value': 1024},
+        'punctuation': {'type': 'general', 'value': 2048},
+        'hexadecimal': {'type': 'general', 'value': 4096},
+        'date': {'type': 'complex'},
     }
+
+    DATE_FORMATS = [
+        '%Y-%m-%d',
+        '%d-%m-%Y',
+        '%d.%m.%Y',
+        '%d/%m/%Y',
+        '%Y%m%d',
+        '%d%m%Y',
+        '%d%m%y',
+    ]
 
     def __init__(self, string: str):
         self.__string = string
@@ -70,7 +85,7 @@ class Profiler:
                 for k, v in profile.get('general').items()
                 if v and self.CHECKS.get(k).get('type') == 'general'
             ]),
-            'specific': [k for k, v in profile.get('specific').items() if v],
+            'specific': ''.join([k for k, v in profile.get('specific').items() if v]),
         }
         return result
 
@@ -116,6 +131,17 @@ class Profiler:
     @profile_decorator
     def is_blank(self):
         return self.__string == ''
+
+    @profile_decorator
+    def is_punctuation(self):
+        return self.__string in string.punctuation
+
+    @profile_decorator
+    def is_hexadecimal(self):
+        for c in self.__string:
+            if c not in string.hexdigits:
+                return False
+        return True
 
     """ SPECIFIC CHECKS """
     @profile_decorator
@@ -165,6 +191,14 @@ class Profiler:
     def is_phone(self):
         return False
 
+    @profile_decorator
+    def is_date(self):
+        for date_format in self.DATE_FORMATS:
+            try:
+                datetime.strptime(self.__string, date_format)
+                return True
+            except ValueError:
+                pass
 
     """ RARE CHECKS """
     @profile_decorator

@@ -21,7 +21,7 @@ class EnhancedString:
 
 class EnhancedLine:
     def __init__(self, line: bytes, delimiter: bytes, encoding: str):
-        self.__line = line
+        self.__line = line.replace(b"'", b"").replace(b'"', b'')
         self.__delimiter = delimiter
         self.__encoding = encoding
         self.profile = Profiler(self.__str__())
@@ -68,6 +68,7 @@ class EnhancedLine:
 class FileProperties:
     LINE_BREAKS = [b'\r\n', b'\r', b'\n']
     DELIMITERS = [b';', b',', b'\t', b'|', b':']
+    STRING_QUALIFIERS = [b'"', b"'"]
 
     def __init__(self, sample: bytes):
         self.line_break = self.__detect_linebreaks(sample)

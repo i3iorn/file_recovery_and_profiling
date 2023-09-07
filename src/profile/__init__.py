@@ -1,7 +1,6 @@
 import json
 import random
 from collections import Counter
-from enum import Enum
 from typing import TYPE_CHECKING
 
 if TYPE_CHECKING:
@@ -36,6 +35,9 @@ class ColumnProfiler:
     def __getitem__(self, item: int):
         return self.__profile.get(item)
 
+    def __calculate_general_profile(self):
+        pass
+
     def __calculate_profile(self):
         """
         Loop through all rows and all fields for each row and count the different profile strings. The most common
@@ -43,26 +45,33 @@ class ColumnProfiler:
         """
         g_prof = {}
         s_prof = {}
+        c_prof = {}
         for line in self.__lines:
             for i, field in enumerate(line.fields):
                 if i not in g_prof:
                     g_prof[i] = []
                     s_prof[i] = []
+                    c_prof[i] = []
                 if field.profile.general != 1024:
                     g_prof[i].append(field.profile.general)
                     s_prof[i].append(field.profile.specific)
+                    c_prof[i].append(field.profile.complex)
 
         result = {}
         for i, profile_list in g_prof.items():
             p = Counter(profile_list).most_common(1)[0][0]
-            s = ''
-            if len(s_prof[0][i]) > 0:
-                s = Counter(s_prof[0][i]).most_common(1)[0][0]
             result[i] = {
                 'value': f"{p}",
                 'example': f"{random.choice(self.__lines).fields[i]}",
                 'probable_type': self.__profile_details.get(str(p), {'name': 'Unknown'}).get('name'),
-                'specific': f"{s}"
             }
+
+        for i, profile_list in s_prof.items():
+            p = Counter(profile_list).most_common(1)[0][0]
+            result[i]['spcific'] = self.__profile_details.get(str(p), {'name': 'Unknown'}).get('name')
+
+        for i, profile_list in c_prof.items():
+            p = Counter(profile_list).most_common(1)[0][0]
+            result[i]['complex'] = self.__profile_details.get(str(p), {'name': 'Unknown'}).get('name')
 
         return result
