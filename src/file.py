@@ -1,3 +1,4 @@
+from zipfile import ZipFile
 from pathlib import Path
 
 from charset_normalizer import from_bytes
@@ -18,6 +19,8 @@ class EnhancedFile:
         with open(path_string, 'rb') as f:
             self.__original_content = f.read()
         self.__content = self.__original_content
+        if self.is_zip_file(self.__content):
+            self.__content = ZipFile(self.__content).read(ZipFile(self.__content).namelist()[0])
         self.__sample = self.__content[:self.BYTES_TO_ANALYZE]
 
         self.__path_string = self.__validate_path(path_string)
@@ -124,9 +127,9 @@ class EnhancedFile:
         return unique_columns
 
     @classmethod
-    def repair(cls, path_string: str):
+    def prepare(cls, path_string: str):
         rep_file = cls(path_string)
-        rep_file_path = Path(path_string).with_suffix('.repaired')
+        rep_file_path = Path(path_string).with_suffix('.prepared')
         with open(rep_file_path, 'wb') as f:
             f.write(rep_file.content)
 
@@ -135,6 +138,12 @@ class EnhancedFile:
             excel_path = ec.to_excel()
             return excel_path
         return rep_file_path
+
+    @staticmethod
+    def is_zip_file(bytes_data):
+        # Check if the first four bytes match the ZIP file signature
+        zip_signature = b'\x50\x4B\x03\x04'
+        return bytes_data.startswith(zip_signature)
 
     def get_column(self, i):
         return [line.fields[i] for line in self.__lines[:self.LINES_TO_ANALYZE] if len(line.fields) > i]
