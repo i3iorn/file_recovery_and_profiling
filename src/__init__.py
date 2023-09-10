@@ -70,9 +70,12 @@ class FileManager:
                 content = f.read()
                 ft = self.__file_type_by_content(content[:100])
                 if ft == FileType.ZIP:
-                    for file_content in self.__get_files_from_zip(content):
-                        ft = self.__file_type_by_content(file_content[:100])
-                        self.__content.append(self.__get_content_object(ft, file_content))
+                    if file.split('.')[-1] == ".zip":
+                        for file_content in self.__get_files_from_zip(content):
+                            ft = self.__file_type_by_content(file_content[:100])
+                            self.__content.append(self.__get_content_object(ft, file_content))
+                    else:
+                        raise FileTypeException
                 else:
                     self.__content.append(self.__get_content_object(ft, content))
                 self.__content[-1].properties.file_type = ft
