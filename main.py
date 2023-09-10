@@ -1,7 +1,8 @@
-from src.file import EnhancedFile
+from src import FileManager
 
-file_path = 'C:/Users/schrammelb/Downloads/2023-08-30_00000000000000052051_CaybonInternational.csv'
+file_path = 'C:/Users/bjosch/Downloads/Relationship_Worksheet.docx'
 
-with EnhancedFile(file_path) as f:
+fm = FileManager(file_path)
+for f in fm:
+    print(f.properties)
     print(f)
-

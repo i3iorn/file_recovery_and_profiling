@@ -82,7 +82,6 @@ class CsvToJsonConverter(BaseConverter):
             self,
             out_path: Path,
     ) -> Path:
-
         data = []
         with open(self.input_path, 'r', encoding='utf-8') as csv_file:
             csv_reader = csv.DictReader(csv_file)
@@ -95,23 +94,10 @@ class CsvToJsonConverter(BaseConverter):
         return out_path
 
 
-class ExcelConverter(BaseConverter):
+class XlsxToCsvConverter(BaseConverter):
     @convert_decorator
     @handle_conversion_errors
     def convert(
-            self,
-            out_path: Path,
-    ) -> Path:
-        if self.input_file.suffix == '.csv':
-            return self.to_excel()
-        elif self.input_file.suffix == '.xlsx':
-            return self.to_csv()
-        else:
-            raise ValueError('Invalid input file extension')
-
-    @convert_decorator
-    @handle_conversion_errors
-    def to_csv(
             self,
             out_path: Path,
     ) -> Path:
@@ -124,9 +110,11 @@ class ExcelConverter(BaseConverter):
                 csv_writer.writerow([cell.value for cell in row])
         return out_path
 
+
+class CsvToXlsxConverter(BaseConverter):
     @convert_decorator
     @handle_conversion_errors
-    def to_excel(
+    def convert(
             self,
             out_path: Path,
     ) -> Path:
@@ -138,3 +126,43 @@ class ExcelConverter(BaseConverter):
 
         wb.save(out_path)
         return out_path
+
+
+class PdfToCsvConverter(BaseConverter):
+    @convert_decorator
+    @handle_conversion_errors
+    def convert(
+            self,
+            out_path: Path,
+    ) -> Path:
+        raise NotImplementedError
+
+
+class RtfToCsvConverter(BaseConverter):
+    @convert_decorator
+    @handle_conversion_errors
+    def convert(
+            self,
+            out_path: Path,
+    ) -> Path:
+        raise NotImplementedError
+
+
+class DocxToCsvConverter(BaseConverter):
+    @convert_decorator
+    @handle_conversion_errors
+    def convert(
+            self,
+            out_path: Path,
+    ) -> Path:
+        raise NotImplementedError
+
+
+class DocToCsvConverter(BaseConverter):
+    @convert_decorator
+    @handle_conversion_errors
+    def convert(
+            self,
+            out_path: Path,
+    ) -> Path:
+        raise NotImplementedError
